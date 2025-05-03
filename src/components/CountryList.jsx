@@ -6,7 +6,7 @@ import { fetchAllCountries } from '../services/api';
 const CountryList = ({ searchQuery, regionFilter }) => {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState();
   const [currentPage, setCurrentPage] = useState(1);
 
   const countriesPerPage = 20;
@@ -54,7 +54,7 @@ const CountryList = ({ searchQuery, regionFilter }) => {
       <Pagination
         count={Math.ceil(filteredCountries.length / countriesPerPage)}
         page={currentPage}
-        onChange={handlePageChange}
+        onChange={(e,v) => setCurrentPage(v)}
         sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
       />
     </>

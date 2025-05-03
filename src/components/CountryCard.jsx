@@ -1,14 +1,21 @@
 import React from 'react';
-import { Card, CardContent, CardMedia, Typography, Button, CardActions, IconButton } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Card, CardContent, CardMedia, Typography, Button, IconButton,CardActions } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
-const CountryCard = ({ country }) => {
-  const { user, addFavorite } = useAuth();
+const CountryCard = ({ country, showRemoveButton = false }) => {
+  const { user, favorites, addFavorite, removeFavorite } = useAuth();
+  const navigate = useNavigate();
+  const isFav = Boolean(favorites.find(f => f.cca3 === country.cca3));
 
-  const handleAddToFavorites = () => {
-    addFavorite(country);
+  const toggleFav = () => {
+    if (isFav) removeFavorite(country);
+    else addFavorite(country);
+
+    // Navigate to the FavoriteCountry page
+    navigate('/favorites');
   };
 
   return (
@@ -17,27 +24,41 @@ const CountryCard = ({ country }) => {
         component="img"
         image={country.flags.png}
         alt={`${country.name.common} flag`}
-        sx={{ height: 140, objectFit: 'contain', width: '100%' }}
+        sx={{ height: 140, objectFit: 'cover' }}
       />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h6" component="div">
-          {country.name.common}
-        </Typography>
+        <Typography gutterBottom variant="h6">{country.name.common}</Typography>
         <Typography variant="body2" color="text.secondary">
-          <strong>Population:</strong> {country.population.toLocaleString()}<br />
-          <strong>Region:</strong> {country.region}<br />
+          <strong>Population:</strong> {country.population.toLocaleString()}<br/>
+          <strong>Region:</strong> {country.region}<br/>
           <strong>Capital:</strong> {country.capital?.[0] || 'N/A'}
         </Typography>
       </CardContent>
-      <CardActions sx={{ mt: 'auto', justifyContent: 'space-between' }}>
-        {user && (
-          <IconButton onClick={handleAddToFavorites} color="primary">
-            <FavoriteIcon />
-          </IconButton>
-        )}
-        <Button component={Link} to={`/country/${country.cca3}`} variant="contained">
+      <CardActions sx={{ justifyContent: 'space-between' }}>
+        <Button
+          component={Link}
+          to={`/country/${country.cca3}`}
+          size="small"
+          variant="contained"
+        >
           Details
         </Button>
+
+        {user && (
+          showRemoveButton ? (
+            <Button
+              size="small"
+              color="error"
+              onClick={() => removeFavorite(country)}
+            >
+              Remove
+            </Button>
+          ) : (
+            <IconButton onClick={toggleFav}>
+              {isFav ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+            </IconButton>
+          )
+        )}
       </CardActions>
     </Card>
   );

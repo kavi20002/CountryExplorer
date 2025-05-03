@@ -4,16 +4,20 @@ import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 
 const Register = () => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({ username: '',email: '', password: '' });
   const [error, setError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
+
+  const handleChange = e => setCredentials({...credentials, [e.target.name] : e.target.value})
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     try {
       await register(credentials);
-      navigate('/');
+      navigate('/login'); 
     } catch (err) {
       setError('Registration failed');
     }
@@ -26,19 +30,30 @@ const Register = () => {
         <TextField
           fullWidth
           label="Username"
+          name='username'
           margin="normal"
           required
           value={credentials.username}
-          onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+          onChange={handleChange}
+        />
+          <TextField
+          label="Email"
+          name="email"
+          value={credentials.email}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
         />
         <TextField
           fullWidth
           label="Password"
           type="password"
+          name='password'
           margin="normal"
           required
           value={credentials.password}
-          onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+          onChange={handleChange}
         />
         {error && <Typography color="error" sx={{ mt: 1 }}>{error}</Typography>}
         <Button

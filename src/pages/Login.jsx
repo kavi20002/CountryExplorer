@@ -4,10 +4,12 @@ import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const handleChange = e => setCredentials({...credentials, [e.target.name] : e.target.value})
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +17,7 @@ const Login = () => {
       await login(credentials);
       navigate('/');
     } catch (err) {
-      setError('Invalid credentials');
+      setError(err.message);
     }
   };
 
@@ -25,20 +27,22 @@ const Login = () => {
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
         <TextField
           fullWidth
-          label="Username"
+          label="Email"
+          name="email"
           margin="normal"
           required
-          value={credentials.username}
-          onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+          value={credentials.email}
+          onChange={handleChange}
         />
         <TextField
           fullWidth
           label="Password"
+          name="password"
           type="password"
           margin="normal"
           required
           value={credentials.password}
-          onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+          onChange={handleChange}
         />
         {error && <Typography color="error" sx={{ mt: 1 }}>{error}</Typography>}
         <Button
