@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -15,9 +16,11 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(credentials);
+      toast.success('Welcome back!');
       navigate('/');
     } catch (err) {
       setError(err.message);
+      toast.error('Login failed. Please try again.');
     }
   };
 

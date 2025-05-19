@@ -54,7 +54,7 @@ const CountryList = ({ searchQuery, regionFilter }) => {
       <Pagination
         count={Math.ceil(filteredCountries.length / countriesPerPage)}
         page={currentPage}
-        onChange={(e,v) => setCurrentPage(v)}
+        onChange={handlePageChange}
         sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}
       />
     </>

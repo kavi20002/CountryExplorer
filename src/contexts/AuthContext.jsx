@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { loginUser, registerUser } from '../services/auth';
+import { toast } from 'react-toastify';
 
 const AuthContext = createContext();
 
@@ -26,14 +27,15 @@ export const AuthProvider = ({ children }) => {
     const userData = await loginUser(credentials);
     setUser(userData);
     persist('user', userData);
+    toast.success('Login successful!');
     return userData;
   };
-
 
   const register = async (credentials) => {
     const userData = await registerUser(credentials);
     setUser(userData);
     persist('user', userData);
+    toast.success('Registration successful!');
     return userData;
   };
 
@@ -42,6 +44,7 @@ export const AuthProvider = ({ children }) => {
     setFavorites([]);
     localStorage.removeItem('user');
     localStorage.removeItem('favorites');
+    toast.info('Logged out successfully!');
   };
 
   const addFavorite = (country) => {
@@ -49,6 +52,7 @@ export const AuthProvider = ({ children }) => {
       const next = [...favorites, country];
       setFavorites(next);
       persist('favorites', next);
+      toast.success(`${country.name} added to favorites!`);
     }
   };
 
@@ -57,7 +61,6 @@ export const AuthProvider = ({ children }) => {
     setFavorites(next);
     persist('favorites', next);
   };
-
 
   return (
     <AuthContext.Provider value={{ user, favorites, login, register, logout, addFavorite, removeFavorite }}>

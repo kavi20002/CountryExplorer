@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const [credentials, setCredentials] = useState({ username: '',email: '', password: '' });
@@ -17,9 +18,11 @@ const Register = () => {
     setError('');
     try {
       await register(credentials);
+      toast.success('Account created successfully! Please log in.');
       navigate('/login'); 
     } catch (err) {
       setError('Registration failed');
+      toast.error('Registration failed. Please try again.');
     }
   };
 
